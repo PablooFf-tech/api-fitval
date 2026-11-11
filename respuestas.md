@@ -24,4 +24,4 @@ El payload del token contiene únicamente el identificador de usuario y los meta
 No incluimos el rol dentro del token para permitir que cualquier cambio de permisos o rol (por ejemplo, promover a un socio a `staff` o revocar acceso) tenga efecto inmediato en la base de datos sin requerir que el usuario vuelva a iniciar sesión o esperar a que expire el token JWT.
 
 ## Pregunta 6
-<!-- Pendiente de ejecución Parte 5 -->
+Funciona sin necesidad de volver a iniciar sesión porque el token JWT almacena únicamente `{ sub: id }`, y el guard (`StaffGuard`) consulta en cada petición el rol fresco directamente desde la base de datos mediante `UsersService`. Si el rol estuviera incrustado dentro del payload del token, seguiría conteniendo `'member'` y el usuario continuaría recibiendo un `403 Forbidden` hasta que el token expirase o volviese a iniciar sesión para generar un nuevo token con el rol `'staff'`.
