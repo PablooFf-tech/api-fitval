@@ -1,98 +1,104 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API del Gimnasio FitVal
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST para la gestión del gimnasio **FitVal**, desarrollada con **NestJS 11**, **TypeScript** y **PostgreSQL 17** con conexión mediante `pg` (node-postgres), autenticación mediante **Argon2** y **JWT**, control de acceso basado en roles (`AuthGuard` y `StaffGuard`) y validación estricta con `class-validator`.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Requisitos previos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Node.js 24+
+- Docker y Docker Compose
 
-## Project setup
+---
 
+## Instalación y puesta en marcha
+
+### 1. Clonar el repositorio
 ```bash
-$ npm install
+git clone https://github.com/PablooFf-tech/api-fitval.git
+cd api-fitval
 ```
 
-## Compile and run the project
-
+### 2. Configurar variables de entorno
+Copia la plantilla de entorno:
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
+```
+El archivo `.env` resultante contiene:
+```env
+DATABASE_URL=postgres://alumno:alumno_dev_123@localhost:5433/fitval
+JWT_SECRET=super_secreto_fitval_jwt_2026
 ```
 
-## Run tests
-
+### 3. Instalar dependencias
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### 4. Arrancar PostgreSQL con Docker
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker compose up -d
+```
+El servicio escuchará en el puerto local **`5433`** (para no colisionar con otros contenedores PostgreSQL estándar en el 5432).
+
+### 5. Cargar el esquema y datos de prueba
+```bash
+# macOS / Linux / Git Bash:
+docker exec -i postgres-fitval psql -U alumno -d fitval < database/schema.sql
+
+# PowerShell:
+Get-Content database/schema.sql | docker exec -i postgres-fitval psql -U alumno -d fitval
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 6. Iniciar la API
+```bash
+# Modo desarrollo con recarga en caliente:
+npm run start:dev
 
-## Resources
+# Compilación y producción:
+npm run build
+npm run start:prod
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+La API quedará escuchando en `http://localhost:3000/api`.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## Endpoints de la API
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Todas las rutas llevan el prefijo `/api`:
 
-## Stay in touch
+| Método | Ruta | Descripción | Acceso |
+|---|---|---|---|
+| `GET` | `/api/health` | Estado de la API y verificación de conexión con PostgreSQL | Público |
+| `GET` | `/api/plans` | Listado de planes ordenados por precio mensual ascendente | Público |
+| `GET` | `/api/classes` | Listado de clases ordenadas por fecha con nombre del monitor | Público |
+| `GET` | `/api/classes?activity=yoga` | Búsqueda insensible a mayúsculas parametrizada (`$1`) | Público |
+| `GET` | `/api/classes/:id` | Detalle de una clase por su ID | Público |
+| `POST` | `/api/classes` | Creación de una clase con comprobación de existencia de monitor | Personal (`staff`) |
+| `DELETE` | `/api/classes/:id` | Borrado de una clase comprobando que no tenga reservas asociadas | Personal (`staff`) |
+| `POST` | `/api/auth/register` | Registro de usuario con hash seguro Argon2 | Público |
+| `POST` | `/api/auth/login` | Login con credenciales, devuelve JWT con `{ sub: id }` | Público |
+| `GET` | `/api/auth/me` | Consulta de perfil del usuario autenticado | Autenticado (`member` / `staff`) |
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## Respuestas y códigos HTTP
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- `200 OK`: Petición procesada correctamente.
+- `201 Created`: Recurso creado con éxito (`POST /api/classes`, `POST /api/auth/register`).
+- `400 Bad Request`: Formato incorrecto, validación DTO fallida o `trainerId` inexistente.
+- `401 Unauthorized`: Token ausente, caducado, alterado o credenciales de login inválidas.
+- `403 Forbidden`: Usuario autenticado pero sin rol suficiente (`StaffGuard`).
+- `404 Not Found`: Recurso no encontrado por ID de ruta.
+- `409 Conflict`: Conflicto de estado (correo duplicado o borrado de clase con reservas activas).
+- `500 Internal Server Error`: Error no controlado o caída del servidor de base de datos.
+
+---
+
+## Verificación de calidad y CI
+
+- Linter: `npm run lint`
+- Build: `npm run build`
+- CI en GitHub Actions: `.github/workflows/ci.yml` ejecutando `htmlhint` y `lint` en Node 24 con la rama `main` protegida.
+- Respuestas a los ejercicios teóricos y prácticos documentadas en [respuestas.md](respuestas.md).
