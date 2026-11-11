@@ -20,7 +20,8 @@ Comprobamos en la API la existencia del monitor para devolver un error `400 Bad 
 Porque la petición es válida sintácticamente y el identificador existe en la base de datos (no es un error de formato o parámetro mal enviado que requiera `400`), pero entra en colisión con el estado actual del recurso y las restricciones de negocio (la clase tiene reservas activas que no se pueden perder), lo que según el estándar HTTP corresponde a un conflicto (`409 Conflict`).
 
 ## Pregunta 5
-<!-- Pendiente de ejecución Parte 4 -->
+El payload del token contiene únicamente el identificador de usuario y los metadatos temporales de emisión y caducidad: `{ "sub": 1, "iat": ..., "exp": ... }`.
+No incluimos el rol dentro del token para permitir que cualquier cambio de permisos o rol (por ejemplo, promover a un socio a `staff` o revocar acceso) tenga efecto inmediato en la base de datos sin requerir que el usuario vuelva a iniciar sesión o esperar a que expire el token JWT.
 
 ## Pregunta 6
 <!-- Pendiente de ejecución Parte 5 -->
